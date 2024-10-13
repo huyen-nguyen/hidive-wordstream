@@ -1,5 +1,5 @@
 // WordStream Configuration
-let svg = d3.select("body").append('svg')
+let svg = d3.select("#vis-container").append('svg')
     .attr("width", window.innerWidth)
     .attr("height", window.innerHeight);
 
@@ -13,7 +13,7 @@ let config = {
 };
 
 // Load data
-d3.csv("../data/hidive/data.csv", function (row){
+d3.csv("../assets/data/hidive/data.csv", function (row){
     return {                                    // renaming columns
         key: row["Key"],
         year: +row["Publication Year"],
