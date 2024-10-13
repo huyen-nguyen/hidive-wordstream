@@ -147,7 +147,7 @@
 
                 let stack = d3.stack()
                     .keys(categories)
-                    .offset(d3.stackOffsetWiggle);
+                    .offset(d3.stackOffsetSilhouette);
 
                 let layers = stack(pointData);
                 let innerBoxes = {};
@@ -489,20 +489,21 @@
             }
 
             function calculateTotalFrequenciesABox(data) {
-                let topics = d3.keys(data[0].words);
-                let totalFrequenciesABox = Array();
-                d3.map(data, function (row) {
-                    let aBox = {};
-                    topics.forEach(topic => {
-                        let totalFrequency = 0;
-                        row.words[topic].forEach(element => {
-                            totalFrequency += element.frequency;
-                        });
-                        aBox[topic] = totalFrequency;
-                    });
-                    totalFrequenciesABox.push(aBox);
-                });
-                return totalFrequenciesABox;
+                // let topics = d3.keys(data[0].words);
+                // let totalFrequenciesABox = Array();
+                // d3.map(data, function (row) {
+                //     let aBox = {};
+                //     topics.forEach(topic => {
+                //         let totalFrequency = 0;
+                //         row.words[topic].forEach(element => {
+                //             totalFrequency += element.frequency;
+                //         });
+                //         aBox[topic] = totalFrequency;
+                //     });
+                //     totalFrequenciesABox.push(aBox);
+                // });
+                // return totalFrequenciesABox;
+                return data.map(d => d.records) // corresponding to the number of publications
             }
 
             //#endregion
@@ -711,7 +712,7 @@
                     return color(i);
                 })
                 .attr("class", "curve")
-                .attr('fill-opacity', 0)
+                .attr('fill-opacity', 0.05)
                 .attr("stroke", "black")
                 .attr('stroke-width', 0)
                 .attr("topic", (d, i) => categories[i]);

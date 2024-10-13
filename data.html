@@ -3,37 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+    <meta content="HIDIVE WordStream" name="description"/>
+    <meta content="Huyen Nguyen" name="author"/>
     <title>WordStream</title>
     <script src="js/d3.v4.min.js"></script>
-    <script src="js/wordstream.min.js"></script>
+    <script src="js/wordstream.js"></script>
+    <link href="styles/main.css" rel="stylesheet"/>
 
 </head>
 <body>
+<h1>The evolution of topics from HIDIVE Lab publication titles</h1>
+<p>Stream height is proportional to the corresponding number of publications.</p>
 <script>
     // WordStream Configuration
     let svg = d3.select("body").append('svg')
-        .attr("width", 2200)
-        .attr("height", 1000);
+        .attr("width", window.innerWidth)
+        .attr("height", window.innerHeight);
 
     let config = {
-        topWord: 30,
-        minFont: 15,
+        topWord: 60,
+        minFont: 10,
         maxFont: 30,
         tickFont: 12,
         legendFont: 12,
-        curve: d3.curveMonotoneX
+        curve: d3.curveCardinal
     };
 
     // HIDIVE data
     const taxonomy = {
-        'Nature': ["Nature Methods", "Nature", "Nature Genetics", "Nature Communications", "Nature Medicine", "Nature Cell Biology", "Nature Biotechnology", "Nature Aging"],
+        'Cell': ["Cell", "Cell Reports", "Cancer Cell", "Cell Systems", "Histochemistry and Cell Biology"],
 
         'Visualization': ["IEEE Transactions on Visualization and Computer Graphics", "Computer Graphics Forum","2023 IEEE Visualization and Visual Analytics (VIS)", "Poster Compendium of the IEEE Conference on Information Visualization (InfoVis’ 15)", "Information Visualization", "IEEE Symposium on Biological Data Visualization 2011", "Proceedings of the IEEE Information Visualization Conference–Posters (InfoVis’ 19)", "Poster Compendium of the IEEE VIS Conference. IEEE", "2023 IEEE VIS Workshop on Visualization Education, Literacy, and Activities (EduVis)", "IEEE Computer Graphics and Applications", "EuroVis 2016 - Posters", "Proceedings of the 2023 CHI Conference on Human Factors in Computing Systems", "2019 IEEE Visualization Conference (VIS)"],
 
-
         "Bioinformatics": ["Bioinformatics", "BMC Bioinformatics", "PLoS Computational Biology", "Biocomputing 2021", "Bioinformatics (Oxford, England)", "Journal of Biomedical Informatics", "Biocomputing 2016: Proceedings of the Pacific Symposium", ],
 
-        'Cell': ["Cell", "Cell Reports", "Cancer Cell", "Cell Systems", "Histochemistry and Cell Biology"],
+        'Nature': ["Nature", "Nature Methods", "Nature Genetics", "Nature Communications", "Nature Medicine", "Nature Cell Biology", "Nature Biotechnology", "Nature Aging"],
     }
 
     // Misc
@@ -95,19 +100,21 @@
         // restructure to put into WS format
         const restructured = groupedData.map((group, timeIndex) => {
             let wordsByCategory = {};
+            let recordsByCategory = {};
             const categories = [...Object.keys(taxonomy), other];
 
             // Iterate over each category
             categories.forEach(category => {
                 const matchingCategory = group.values.filter(value => value.key === category);
                 wordsByCategory[category] = matchingCategory.length ? processTitle(matchingCategory[0].values, category, timeIndex) : [];
-
+                recordsByCategory[category] = matchingCategory.length ? matchingCategory[0].values.length : 0;
             });
 
             // Return the restructured object with date and categorized words
             return {
                 date: group.key,         // The key of the group (date)
-                words: wordsByCategory   // The object with words categorized by taxonomy
+                words: wordsByCategory,   // The object with words categorized by taxonomy
+                records: recordsByCategory
             };
         });
 
