@@ -13,7 +13,7 @@ let config = {
 };
 
 // Load data
-d3.csv("../assets/data/hidive/data.csv", function (row){
+d3.csv("data/hidive/data.csv", function (row){
     return {                                    // renaming columns
         key: row["Key"],
         year: +row["Publication Year"],
