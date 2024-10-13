@@ -631,7 +631,8 @@
                 legendFont = config.legendFont,
                 curve = config.curve;
 
-            const color = d3.scaleOrdinal(d3.schemeCategory10);
+            const customcolorScheme = ['#0072B2', '#E69F00', '#009E73', '#D55E00', '#BE3A78'];
+            const color = d3.scaleOrdinal(customcolorScheme);
             const axisPadding = 10;
             const legendOffset = 10;
             const margins = {left: 20, top: 20, right: 10, bottom: 30};
@@ -735,7 +736,7 @@
 
             opacity = d3.scaleLog()
                 .domain([minFreq, maxFreq])
-                .range([0.4, 1]);
+                .range([0.5, 1]);
 
             let prevColor;
 

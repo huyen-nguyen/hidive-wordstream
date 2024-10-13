@@ -10,7 +10,7 @@ const config = {
     maxFont: 30,
     tickFont: 12,
     legendFont: 12,
-    curve: d3.curveMonotoneX
+    curve: d3.curveMonotoneX,
 };
 
 // Load data
@@ -224,17 +224,4 @@ function updateTableUponSelection(){
     });
 
     drawTable(filteredData)
-
-}
-
-function checkTopicToBeOther(thisTopic, d){
-    if (Object.keys(taxonomy).includes(thisTopic)){
-        return taxonomy[thisTopic].includes(d.venue)
-    }
-    else if (thisTopic === other)
-        return true
-}
-
-function listOperation(){
-
 }
