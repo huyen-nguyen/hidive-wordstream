@@ -1,3 +1,4 @@
+let data_;
 // WordStream Configuration
 const svg = d3.select("#vis-container").append('svg')
     .attr("width", window.innerWidth)
@@ -26,6 +27,7 @@ d3.csv("data/hidive/data.csv", function (row){
 }, function (error, data){
     if (error) throw error;
 
+    data_ = data;
     console.log(data)
 
     const groupedData = d3.nest()
@@ -38,13 +40,11 @@ d3.csv("data/hidive/data.csv", function (row){
             else return other
         })
         .entries(data).sort((a, b) => +a.key - +b.key)
-    console.log("groupedData", groupedData);
 
     // restructure to put into WS format
     const restructured = groupedData.map((group, timeIndex) => {
         let wordsByCategory = {};
         let recordsByCategory = {};
-        const categories = [...Object.keys(taxonomy), other];
 
         // Iterate over each category
         categories.forEach(category => {
@@ -61,15 +61,13 @@ d3.csv("data/hidive/data.csv", function (row){
         };
     });
 
-    console.log("restructured", restructured)
-
     wordstream(svg, restructured, config)
-    drawTable(convertTabularData(data.sort((a, b) => +b.key - +a.key)));
+    drawTable(data);
 
 });
 
 function drawTable(dataset) {
-    console.log(dataset)
+    console.log("current dataset", dataset)
     let tablediv = d3.select('#table-container'); // Select the div where the table will be placed
     tablediv.selectAll('*').remove(); // Clear any existing content
 
@@ -79,7 +77,7 @@ function drawTable(dataset) {
 
     // Initialize DataTables with the dataset and column titles
     $(table.node()).DataTable({
-        data: dataset, // Data to be displayed
+        data: convertTabularData(dataset.sort((a, b) => +b.key - +a.key)), // Data to be displayed
         order: [[0, 'dsc']],
         "pageLength": 25, // Number of rows per page
         "deferRender": true, // Efficient rendering for large datasets
@@ -136,11 +134,11 @@ function drawTable(dataset) {
 
 function processTitle(array2, category, timeIndex){
     const concatenatedTitles = array2.map(d => d.title).join(" ")
-    const wordsArray = cleanAndTokenizeText(concatenatedTitles)
+    const wordsArray = cleanTitle(concatenatedTitles)
     return countWordFrequency(wordsArray, category, timeIndex)
 }
 
-function cleanAndTokenizeText(text){
+function cleanTitle(text){
     // remove punctuation
     const cleanedText = text.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?"']/g, "");
 
@@ -197,4 +195,46 @@ function title() {
 
 function capFirstLetter(word){
     return word.charAt(0).toUpperCase() + word.slice(1)
+}
+
+function updateTableUponSelection(){
+    console.log(filters);
+
+    const filteredData = data_.filter(record => {
+        let matched = false;
+
+        // Iterate through the filter object and apply the appropriate conditions
+        for (let category of categories) {
+            if (filters[category] && taxonomy[category]) { // Check if the filter value is not empty and not OTHERS
+                if (taxonomy[category].includes(record.venue) && cleanTitle(record.title).includes(filters[category])) {
+                    matched = true; // If venue matches and title contains the filter term, mark as matched
+                    break; // No need to check further once a match is found
+                }
+            }
+        }
+
+        // If none of the categories A, B, C, D matched, check the 'Others' filter
+        if (!matched && filters.Others) {
+            // Check if venue is not one of the specified categories and title contains 'Others' filter
+            if (cleanTitle(record.title).includes(filters.Others)) {
+                matched = true;
+            }
+        }
+        return matched; // Return the record if it matched any of the conditions
+    });
+
+    drawTable(filteredData)
+
+}
+
+function checkTopicToBeOther(thisTopic, d){
+    if (Object.keys(taxonomy).includes(thisTopic)){
+        return taxonomy[thisTopic].includes(d.venue)
+    }
+    else if (thisTopic === other)
+        return true
+}
+
+function listOperation(){
+
 }

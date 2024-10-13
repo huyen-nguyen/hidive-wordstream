@@ -9,6 +9,8 @@ const taxonomy = {
     'Nature': ["Nature", "Nature Methods", "Nature Genetics", "Nature Communications", "Nature Medicine", "Nature Cell Biology", "Nature Biotechnology", "Nature Aging"],
 }
 
+const categories = ["Cell", "Visualization", "Bioinformatics", "Nature", "Others"]
+
 // Misc
 const stopWords = [
     "a", "about", "above", "after", "again", "against", "all", "am", "an", "and",
@@ -38,3 +40,12 @@ const stopWords = [
 const other = 'Others'
 
 const selectedField = ['year', 'authors', 'title', 'venue', 'DOI', 'URL'];
+
+// enlist & delist
+let filters = {
+    "Cell": "",
+    "Visualization": "",
+    "Bioinformatics": "",
+    "Nature": "",
+    "Others": "",
+}

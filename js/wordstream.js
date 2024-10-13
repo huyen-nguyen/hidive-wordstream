@@ -815,7 +815,10 @@
                     .attr("stroke-width", 0);
             });
             //Click
-            mainGroup.selectAll('.textData').on('click', function () {
+            mainGroup.selectAll('.textData').on('click', function (item) {
+                console.log("word clicked", item)
+                filters[item.topic] = item.text;
+                updateTableUponSelection()
                 let thisText = d3.select(this);
                 let text = thisText.text();
                 let topic = thisText.attr('topic');
@@ -882,6 +885,8 @@
             });
             categories.forEach(topic => {
                 d3.select("path[topic='" + topic + "']").on('click', function () {
+                    filters[topic] = "";
+                    updateTableUponSelection()
                     mainGroup.selectAll('.textData').filter(t => {
                         return t && !t.cloned && t.placed && t.topic === topic;
                     })
