@@ -1,12 +1,12 @@
 // WordStream Configuration
-let svg = d3.select("#vis-container").append('svg')
+const svg = d3.select("#vis-container").append('svg')
     .attr("width", window.innerWidth)
-    .attr("height", window.innerHeight);
+    .attr("height", 900);
 
-let config = {
+const config = {
     topWord: 100,
-    minFont: 12,
-    maxFont: 32,
+    minFont: 11,
+    maxFont: 30,
     tickFont: 12,
     legendFont: 12,
     curve: d3.curveMonotoneX
@@ -16,7 +16,7 @@ let config = {
 d3.csv("data/hidive/data.csv", function (row){
     return {                                    // renaming columns
         key: row["Key"],
-        year: +row["Publication Year"],
+        year: row["Publication Year"],
         authors: row["Author"],
         title: row["Title"],
         venue: row["Publication Title"],
@@ -64,8 +64,75 @@ d3.csv("data/hidive/data.csv", function (row){
     console.log("restructured", restructured)
 
     wordstream(svg, restructured, config)
+    drawTable(convertTabularData(data.sort((a, b) => +b.key - +a.key)));
 
 });
+
+function drawTable(dataset) {
+    console.log(dataset)
+    let tablediv = d3.select('#table-container'); // Select the div where the table will be placed
+    tablediv.selectAll('*').remove(); // Clear any existing content
+
+    let table = tablediv
+        .append('table')
+        .attr("class", "display");
+
+    // Initialize DataTables with the dataset and column titles
+    $(table.node()).DataTable({
+        data: dataset, // Data to be displayed
+        order: [[0, 'dsc']],
+        "pageLength": 25, // Number of rows per page
+        "deferRender": true, // Efficient rendering for large datasets
+        autoWidth: false,
+        columns: [
+            { title: 'Year', width: '5%', targets: 0 },
+            { title: 'Authors', width: '30%', targets: 1 },
+            { title: 'Title', width: '25%', targets: 2 },
+            { title: 'Venue', width: '10%', targets: 3 },
+            { title: 'DOI', width: '12%', targets: 4 },
+            { title: 'URL', width: '12%', targets: 5,
+                render: function(data, type, row, meta) {
+                    // Return the URL as a clickable link
+                    return '<a href="' + data + '" target="_blank">' + data + '</a>';
+                } },
+        ],
+        "drawCallback": function (settings) {
+            // This is triggered after the table has been rendered
+            $('td').each(function () {
+                let content = $(this).text().trim(); // Get the content
+                let authorsArray = content.split(";"); // Split the authors by semi-colon
+                let visibleLimit = 20; // Limit of authors to show initially
+
+                if (authorsArray.length > visibleLimit) {
+                    let visibleAuthors = authorsArray.slice(0, visibleLimit).join(", ");
+                    let hiddenAuthors = authorsArray.slice(visibleLimit).join(", ");
+
+                    // Create the "Read More" and "Read Less" functionality
+                    $(this).html(`
+                    ${visibleAuthors}
+                    <span class="more-authors" style="display:none;">, ${hiddenAuthors}</span>
+                    <a href="#" class="read-more">Read More</a>
+                `);
+
+                    // Toggle the visibility of hidden authors when "Read More" is clicked
+                    $(this).find('.read-more').on('click', function (e) {
+                        e.preventDefault();
+                        let moreAuthors = $(this).siblings('.more-authors');
+                        if (moreAuthors.is(':visible')) {
+                            moreAuthors.hide();
+                            $(this).text('Read More');
+                        } else {
+                            moreAuthors.show();
+                            $(this).text('Read Less');
+                        }
+                    });
+                }
+            });
+        }
+    });
+
+    d3.select("#DataTables_Table_0").style("table-layout", "fixed")
+}
 
 function processTitle(array2, category, timeIndex){
     const concatenatedTitles = array2.map(d => d.title).join(" ")
@@ -108,4 +175,26 @@ function countWordFrequency(wordsArray, category, timeIndex){
         }
     })
     return boxCount.sort((a,b) => b.frequency - a.frequency);
+}
+
+function convertTabularData(data){
+    return data.map(d => {
+        let result = [];
+        selectedField.forEach(p => {
+            result.push(d[p])
+        })
+        return result
+    })
+}
+
+function title() {
+    return selectedField.map(d => {
+        return {
+            title: capFirstLetter(d)
+        }
+    })
+}
+
+function capFirstLetter(word){
+    return word.charAt(0).toUpperCase() + word.slice(1)
 }

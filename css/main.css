@@ -26,3 +26,13 @@
     position: relative; /* Make sure content stays above the overlay */
     z-index: 2; /* Places the content on top of the transparent layer */
 }
+
+.intro-text{
+    padding: 40px 0 30px 0;
+}
+
+#DataTables_Table_0 td {
+    word-wrap: break-word;       /* Break long words */
+    overflow-wrap: break-word;   /* Break long words in modern browsers */
+    white-space: normal;         /* Allow wrapping */
+}

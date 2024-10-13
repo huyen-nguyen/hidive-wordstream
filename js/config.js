@@ -36,3 +36,5 @@ const stopWords = [
     "wasn", "weren", "won", "wouldn", "dont"
 ];
 const other = 'Others'
+
+const selectedField = ['year', 'authors', 'title', 'venue', 'DOI', 'URL'];
