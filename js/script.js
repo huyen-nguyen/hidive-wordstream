@@ -7,6 +7,7 @@ const svg = d3.select("#vis-container").append('svg')
 
 function updateWindowSize(){
     svg.attr("width", window.innerWidth)
+    document.getElementById("widthValue").value = window.innerWidth;
     visualize();
 }
 
