@@ -8,8 +8,8 @@ const config = {
     topWord: 100,
     minFont: 11,
     maxFont: 30,
-    tickFont: 12,
-    legendFont: 12,
+    tickFont: 13,
+    legendFont: 14,
     curve: d3.curveMonotoneX,
 };
 
@@ -28,7 +28,6 @@ d3.csv("data/hidive/data.csv", function (row){
     if (error) throw error;
 
     data_ = data;
-    console.log(data)
 
     const groupedData = d3.nest()
         .key(d => +d.year)      // group by year
@@ -273,4 +272,11 @@ function hexaChangeRGB(hex, alpha) {
 
 function getCategory(text){
     return categories.find(d => filters[d] === text)
+}
+
+function legendDescription(text){
+    if (text === other) {
+        return "Others, including Genome Biology, PLOS ONE, PLOS Digital Health, Cancer Discovery, Immunity, eClinicalMedicine, npj Digital Medicine"
+    }
+    return text + ': ' + taxonomy_shorten[text].join(", ")
 }
