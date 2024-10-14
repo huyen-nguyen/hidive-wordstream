@@ -9,8 +9,6 @@ const taxonomy = {
     'Nature': ["Nature", "Nature Methods", "Nature Genetics", "Nature Communications", "Nature Medicine", "Nature Cell Biology", "Nature Biotechnology", "Nature Aging"],
 }
 
-const categories = ["Cell", "Visualization", "Bioinformatics", "Nature", "Others"]
-
 // Misc
 const stopWords = [
     "a", "about", "above", "after", "again", "against", "all", "am", "an", "and",
@@ -48,4 +46,12 @@ let filters = {
     "Bioinformatics": "",
     "Nature": "",
     "Others": "",
+}
+
+const categories = ["Cell", "Visualization", "Bioinformatics", "Nature", "Others"]
+
+const customcolorScheme = ['#0072B2', '#E69F00', '#009E73', '#D55E00', '#cc438f'];
+
+function colorWord(category) {
+    return customcolorScheme[categories.indexOf(category)]
 }

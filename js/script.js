@@ -67,7 +67,6 @@ d3.csv("data/hidive/data.csv", function (row){
 });
 
 function drawTable(dataset) {
-    console.log("current dataset", dataset)
     let tablediv = d3.select('#table-container'); // Select the div where the table will be placed
     tablediv.selectAll('*').remove(); // Clear any existing content
 
@@ -85,11 +84,11 @@ function drawTable(dataset) {
         columns: [
             { title: 'Year', width: '5%', targets: 0 },
             { title: 'Authors', width: '30%', targets: 1 },
-            { title: 'Title', width: '25%', targets: 2 },
+            { title: 'Title', width: '25%', targets: 2, className: 'title-col' },
             { title: 'Venue', width: '10%', targets: 3 },
             { title: 'DOI', width: '12%', targets: 4 },
             { title: 'URL', width: '12%', targets: 5,
-                render: function(data, type, row, meta) {
+                render: function(data) {
                     // Return the URL as a clickable link
                     return '<a href="' + data + '" target="_blank">' + data + '</a>';
                 } },
@@ -126,6 +125,8 @@ function drawTable(dataset) {
                     });
                 }
             });
+
+            hightlighText();
         }
     });
 
@@ -140,7 +141,7 @@ function processTitle(array2, category, timeIndex){
 
 function cleanTitle(text){
     // remove punctuation
-    const cleanedText = text.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?"']/g, "");
+    const cleanedText = text.replace(/[.,\/#!$%\^&\*;:{}=_`~()?"']/g, "");
 
     // convert to lowercase
     const lowerCaseText = cleanedText.toLowerCase();
@@ -200,8 +201,8 @@ function capFirstLetter(word){
 function updateTableUponSelection(){
     console.log(filters);
 
-    const filteredData = data_.filter(record => {
-        let matched = false;
+    const filteredData = Object.values(filters).every(d => !d) ? data_ : data_.filter(record => {
+            let matched = false;
 
         // Iterate through the filter object and apply the appropriate conditions
         for (let category of categories) {
@@ -224,4 +225,51 @@ function updateTableUponSelection(){
     });
 
     drawTable(filteredData)
+}
+
+function hightlighText(){
+    // if filter is empty, return
+    if (Object.values(filters).every(d => !d)) return
+
+    let textArr = Object.values(filters).filter(d => d.length > 0)
+    console.log(textArr)
+
+    var instance = new Mark(document.querySelectorAll("td.title-col"));
+    instance.mark(textArr, {
+        "wildcards": "withSpaces",
+        "ignoreJoiners": true,
+        "acrossElements": false,
+        "accuracy": {
+            "value": "exactly",
+            "limiters": [" ", ".", "\"", "'", "]", "[", "}", "{", ")", "(", "–", "-", ":", ";", "?", "!", ",", "/"]
+        },
+    });
+
+    d3.selectAll("mark")
+        .style("background", function () {
+            let item = this.innerHTML.split("<")[0].toLowerCase()
+            return hexaChangeRGB(colorWord(getCategory(item)), 0.3)
+
+        })
+        .classed("highlight", true)
+        .html(function () {
+            let item = this.innerHTML.split("<")[0].toLowerCase()
+            return this.innerHTML.split("<")[0] + '<span style="color: ' + colorWord(getCategory(item)) + '">' + getCategory(item) + '</span>'
+        })
+}
+
+function hexaChangeRGB(hex, alpha) {
+    var r = parseInt(hex.slice(1, 3), 16),
+        g = parseInt(hex.slice(3, 5), 16),
+        b = parseInt(hex.slice(5, 7), 16);
+
+    if (alpha) {
+        return "rgba(" + r + ", " + g + ", " + b + ", " + alpha + ")";
+    } else {
+        return "rgb(" + r + ", " + g + ", " + b + ")";
+    }
+}
+
+function getCategory(text){
+    return categories.find(d => filters[d] === text)
 }

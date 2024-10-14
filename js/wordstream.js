@@ -631,7 +631,6 @@
                 legendFont = config.legendFont,
                 curve = config.curve;
 
-            const customcolorScheme = ['#0072B2', '#E69F00', '#009E73', '#D55E00', '#BE3A78'];
             const color = d3.scaleOrdinal(customcolorScheme);
             const axisPadding = 10;
             const legendOffset = 10;
@@ -817,7 +816,6 @@
             });
             //Click
             mainGroup.selectAll('.textData').on('click', function (item) {
-                console.log("word clicked", item)
                 filters[item.topic] = item.text;
                 updateTableUponSelection()
                 let thisText = d3.select(this);
