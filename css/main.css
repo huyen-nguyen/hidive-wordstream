@@ -31,11 +31,47 @@
     padding: 40px 0 30px 0;
 }
 
-#DataTables_Table_0 td {
+/* Ensure the table layout is fixed */
+#dataTable {
+    table-layout: fixed;
+    width: 100%; /* Make sure the table takes full width of its container */
     word-wrap: break-word;       /* Break long words */
     overflow-wrap: break-word;   /* Break long words in modern browsers */
-    white-space: normal;         /* Allow wrapping */
+    white-space: normal;
 }
+
+/* Set fixed column widths for each column using the class names */
+
+/* Year column */
+.col-year {
+    width: 5%;
+}
+
+/* Authors column */
+.col-authors {
+    width: 30%;
+}
+
+/* Title column */
+.col-title {
+    width: 25%;
+}
+
+/* Venue column */
+.col-venue {
+    width: 14%;
+}
+
+/* DOI column */
+.col-doi {
+    width: 13%;
+}
+
+/* URL column */
+.col-url {
+    width: 13%;
+}
+
 
 /* ----- marking highlighting ------ */
 
