@@ -4,6 +4,7 @@ panelForUpdate()
 function visualize(){
     d3.select("#mainSVG").selectAll("*").remove()
     wordstream(svg, restructured, config);
+    resetFilter()
     updateTableUponSelection()
 }
 
