@@ -1,3 +1,4 @@
+let data_;
 // WordStream Configuration
 const svg = d3.select("#vis-container").append('svg')
     .attr("width", window.innerWidth)
@@ -9,7 +10,7 @@ const config = {
     maxFont: 30,
     tickFont: 12,
     legendFont: 12,
-    curve: d3.curveMonotoneX
+    curve: d3.curveMonotoneX,
 };
 
 // Load data
@@ -26,6 +27,7 @@ d3.csv("data/hidive/data.csv", function (row){
 }, function (error, data){
     if (error) throw error;
 
+    data_ = data;
     console.log(data)
 
     const groupedData = d3.nest()
@@ -38,13 +40,11 @@ d3.csv("data/hidive/data.csv", function (row){
             else return other
         })
         .entries(data).sort((a, b) => +a.key - +b.key)
-    console.log("groupedData", groupedData);
 
     // restructure to put into WS format
     const restructured = groupedData.map((group, timeIndex) => {
         let wordsByCategory = {};
         let recordsByCategory = {};
-        const categories = [...Object.keys(taxonomy), other];
 
         // Iterate over each category
         categories.forEach(category => {
@@ -61,15 +61,12 @@ d3.csv("data/hidive/data.csv", function (row){
         };
     });
 
-    console.log("restructured", restructured)
-
     wordstream(svg, restructured, config)
-    drawTable(convertTabularData(data.sort((a, b) => +b.key - +a.key)));
+    drawTable(data);
 
 });
 
 function drawTable(dataset) {
-    console.log(dataset)
     let tablediv = d3.select('#table-container'); // Select the div where the table will be placed
     tablediv.selectAll('*').remove(); // Clear any existing content
 
@@ -79,7 +76,7 @@ function drawTable(dataset) {
 
     // Initialize DataTables with the dataset and column titles
     $(table.node()).DataTable({
-        data: dataset, // Data to be displayed
+        data: convertTabularData(dataset.sort((a, b) => +b.key - +a.key)), // Data to be displayed
         order: [[0, 'dsc']],
         "pageLength": 25, // Number of rows per page
         "deferRender": true, // Efficient rendering for large datasets
@@ -87,11 +84,11 @@ function drawTable(dataset) {
         columns: [
             { title: 'Year', width: '5%', targets: 0 },
             { title: 'Authors', width: '30%', targets: 1 },
-            { title: 'Title', width: '25%', targets: 2 },
+            { title: 'Title', width: '25%', targets: 2, className: 'title-col' },
             { title: 'Venue', width: '10%', targets: 3 },
             { title: 'DOI', width: '12%', targets: 4 },
             { title: 'URL', width: '12%', targets: 5,
-                render: function(data, type, row, meta) {
+                render: function(data) {
                     // Return the URL as a clickable link
                     return '<a href="' + data + '" target="_blank">' + data + '</a>';
                 } },
@@ -128,6 +125,8 @@ function drawTable(dataset) {
                     });
                 }
             });
+
+            hightlighText();
         }
     });
 
@@ -136,13 +135,13 @@ function drawTable(dataset) {
 
 function processTitle(array2, category, timeIndex){
     const concatenatedTitles = array2.map(d => d.title).join(" ")
-    const wordsArray = cleanAndTokenizeText(concatenatedTitles)
+    const wordsArray = cleanTitle(concatenatedTitles)
     return countWordFrequency(wordsArray, category, timeIndex)
 }
 
-function cleanAndTokenizeText(text){
+function cleanTitle(text){
     // remove punctuation
-    const cleanedText = text.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?"']/g, "");
+    const cleanedText = text.replace(/[.,\/#!$%\^&\*;:{}=_`~()?"']/g, "");
 
     // convert to lowercase
     const lowerCaseText = cleanedText.toLowerCase();
@@ -197,4 +196,80 @@ function title() {
 
 function capFirstLetter(word){
     return word.charAt(0).toUpperCase() + word.slice(1)
+}
+
+function updateTableUponSelection(){
+    console.log(filters);
+
+    const filteredData = Object.values(filters).every(d => !d) ? data_ : data_.filter(record => {
+            let matched = false;
+
+        // Iterate through the filter object and apply the appropriate conditions
+        for (let category of categories) {
+            if (filters[category] && taxonomy[category]) { // Check if the filter value is not empty and not OTHERS
+                if (taxonomy[category].includes(record.venue) && cleanTitle(record.title).includes(filters[category])) {
+                    matched = true; // If venue matches and title contains the filter term, mark as matched
+                    break; // No need to check further once a match is found
+                }
+            }
+        }
+
+        // If none of the categories A, B, C, D matched, check the 'Others' filter
+        if (!matched && filters.Others) {
+            // Check if venue is not one of the specified categories and title contains 'Others' filter
+            if (cleanTitle(record.title).includes(filters.Others)) {
+                matched = true;
+            }
+        }
+        return matched; // Return the record if it matched any of the conditions
+    });
+
+    drawTable(filteredData)
+}
+
+function hightlighText(){
+    // if filter is empty, return
+    if (Object.values(filters).every(d => !d)) return
+
+    let textArr = Object.values(filters).filter(d => d.length > 0)
+    console.log(textArr)
+
+    var instance = new Mark(document.querySelectorAll("td.title-col"));
+    instance.mark(textArr, {
+        "wildcards": "withSpaces",
+        "ignoreJoiners": true,
+        "acrossElements": false,
+        "accuracy": {
+            "value": "exactly",
+            "limiters": [" ", ".", "\"", "'", "]", "[", "}", "{", ")", "(", "–", "-", ":", ";", "?", "!", ",", "/"]
+        },
+    });
+
+    d3.selectAll("mark")
+        .style("background", function () {
+            let item = this.innerHTML.split("<")[0].toLowerCase()
+            return hexaChangeRGB(colorWord(getCategory(item)), 0.3)
+
+        })
+        .classed("highlight", true)
+        .html(function () {
+            let item = this.innerHTML.split("<")[0].toLowerCase()
+            return this.innerHTML.split("<")[0] + '<span style="color: ' + colorWord(getCategory(item)) + '">' + getCategory(item) + '</span>'
+        })
+}
+
+function hexaChangeRGB(hex, alpha) {
+    var r = parseInt(hex.slice(1, 3), 16),
+        g = parseInt(hex.slice(3, 5), 16),
+        b = parseInt(hex.slice(5, 7), 16);
+
+    if (alpha) {
+        return "rgba(" + r + ", " + g + ", " + b + ", " + alpha + ")";
+    } else {
+        return "rgb(" + r + ", " + g + ", " + b + ")";
+    }
+}
+
+function getCategory(text){
+    return categories.find(d => filters[d] === text)
 }

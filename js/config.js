@@ -38,3 +38,20 @@ const stopWords = [
 const other = 'Others'
 
 const selectedField = ['year', 'authors', 'title', 'venue', 'DOI', 'URL'];
+
+// enlist & delist
+let filters = {
+    "Cell": "",
+    "Visualization": "",
+    "Bioinformatics": "",
+    "Nature": "",
+    "Others": "",
+}
+
+const categories = ["Cell", "Visualization", "Bioinformatics", "Nature", "Others"]
+
+const customcolorScheme = ['#0072B2', '#E69F00', '#009E73', '#D55E00', '#cc438f'];
+
+function colorWord(category) {
+    return customcolorScheme[categories.indexOf(category)]
+}
