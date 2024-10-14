@@ -903,13 +903,14 @@
             });
 
             //Build the legends
+            let prev;
             legendGroup.attr('transform', 'translate(' + margins.left + ',' + (height) + ')');
             let legendNodes = legendGroup.selectAll('g').data(boxes.topics).enter().append('g')
                 .attr('transform', function (d, i) {
-                    return 'translate(' + 10 + ',' + (i * legendFont) + ')';
+                    return 'translate(' + 30 + ',' + (i * (3+legendFont)) + ')';
                 });
             legendNodes.append('circle')
-                .attr("r", 5)
+                .attr("r", 6)
                 .attr("fill", (d, i) => color(i))
                 .attr('fill-opacity', 1)
                 .attr("stroke", "black")
@@ -919,7 +920,17 @@
                 .text(d => d)
                 .attr('font-size', legendFont)
                 .attr('alignment-baseline', "middle")
-                .attr("dx", 8);
+                .attr("dx", 10)
+                .on('mouseenter', function () {
+                    prev = this.innerHTML;
+                    let thisText = d3.select(this);
+                    thisText.style('cursor', 'e-resize');
+                    this.innerHTML = legendDescription(prev)
+                })
+                .on('mouseout', function () {
+                    this.innerHTML = prev
+                })
+            ;
 
             function styleAxis(axisNodes) {
                 axisNodes.selectAll('.domain')
