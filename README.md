@@ -16,4 +16,4 @@ Visualizing the evolution of topics extracted from HIDIVE Lab publication titles
 - Hovering upon legend text for its list of venues
 - The background in the header also resembles a stream~~
 
-[HIDIVE-WordStream.mov](media%2FHIDIVE-WordStream.mov)
+<video src="https://github.com/user-attachments/assets/cc635db9-3ab1-45d2-8624-9f245bfe37d0" width="352" height="720"></video>
