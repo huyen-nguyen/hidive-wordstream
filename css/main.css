@@ -94,3 +94,56 @@ mark span{
     margin-left: 0.3rem;
     color: #424242;
 }
+
+/* Floating sticky box styling */
+.floating-box {
+    position: absolute;
+    top: 0; /* Place it initially at the top of the vis-container */
+    left: 10px; /* Align it to the left side of the vis-container */
+    width: 260px;
+    height: 320px;
+    background-color: #f5f5f5;
+    border: 1px solid #ccc;
+    padding: 16px 20px;
+    font-size: 14px;
+    z-index: 1000; /* Ensure it's above other content */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Optional shadow for floating effect */
+}
+
+#vis-container{
+    position: relative;
+    overflow-y: auto;
+}
+
+.refresh-btn{
+    display: inline-block;
+    float: right;
+}
+
+/* Base button styling */
+.refresh-btn {
+    background-color: #388DA8FF; /* Green background */
+    color: white; /* White text */
+    padding: 4px 5px; /* Padding inside the button */
+    border: none; /* Remove border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    transition: background-color 0.3s, transform 0.2s; /* Smooth transition */
+}
+
+/* Button hover effect */
+.refresh-btn:hover {
+    background-color: #2e839d; /* Darker green on hover */
+}
+
+/* Button active (pressed) effect */
+.refresh-btn:active {
+    transform: scale(0.98); /* Slightly shrink on click */
+    background-color: #3b839a; /* Even darker green */
+}
+
+
+.check-bg{
+    display: inline-block;
+}

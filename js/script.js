@@ -1,8 +1,14 @@
-let data_;
+let data_, restructured;
 // WordStream Configuration
 const svg = d3.select("#vis-container").append('svg')
     .attr("width", window.innerWidth)
-    .attr("height", 900);
+    .attr("height", 900)
+    .attr("id", "mainSVG");
+
+function updateWindowSize(){
+    svg.attr("width", window.innerWidth)
+    visualize();
+}
 
 const config = {
     topWord: 100,
@@ -41,7 +47,7 @@ d3.csv("data/hidive/data.csv", function (row){
         .entries(data).sort((a, b) => +a.key - +b.key)
 
     // restructure to put into WS format
-    const restructured = groupedData.map((group, timeIndex) => {
+    restructured = groupedData.map((group, timeIndex) => {
         let wordsByCategory = {};
         let recordsByCategory = {};
 
@@ -199,8 +205,6 @@ function capFirstLetter(word){
 }
 
 function updateTableUponSelection(){
-    console.log(filters);
-
     const filteredData = Object.values(filters).every(d => !d) ? data_ : data_.filter(record => {
             let matched = false;
 
@@ -232,7 +236,6 @@ function hightlighText(){
     if (Object.values(filters).every(d => !d)) return
 
     let textArr = Object.values(filters).filter(d => d.length > 0)
-    console.log(textArr)
 
     var instance = new Mark(document.querySelectorAll("td.title-col"));
     instance.mark(textArr, {

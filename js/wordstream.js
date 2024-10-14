@@ -956,7 +956,7 @@
                 gridlineNodes.selectAll('.tick line')
                     .attr("fill", "none")
                     .attr("stroke-width", 0.7)
-                    .attr("stroke", 'lightgray');
+                    .attr("stroke", '#e3e3e3');
             }
         })(data);
         return window.wordstream;
