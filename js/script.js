@@ -2,7 +2,7 @@ let data_, restructured;
 // WordStream Configuration
 const svg = d3.select("#vis-container").append('svg')
     .attr("width", window.innerWidth)
-    .attr("height", 900)
+    .attr("height", 800)
     .attr("id", "mainSVG");
 
 function updateWindowSize(){
@@ -138,6 +138,12 @@ function drawTable(dataset) {
     });
 
     d3.select("#DataTables_Table_0").style("table-layout", "fixed")
+
+    d3.select(".dt-search input").on("input", function() {
+        var searchTerm = d3.select(this).property("value");
+        // console.log("Typing in DataTables search box:", searchTerm);
+        // resetFilter()
+    });
 }
 
 function processTitle(array2, category, timeIndex){
@@ -282,4 +288,8 @@ function legendDescription(text){
         return "Others, including Genome Biology, PLOS ONE, PLOS Digital Health, Cancer Discovery, Immunity, eClinicalMedicine, npj Digital Medicine"
     }
     return text + ': ' + taxonomy_shorten[text].join(", ")
+}
+
+function resetFilter(){
+    Object.keys(filters).forEach(key => filters[key] = "")
 }

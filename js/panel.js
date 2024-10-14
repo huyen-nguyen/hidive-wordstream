@@ -4,6 +4,7 @@ panelForUpdate()
 function visualize(){
     d3.select("#mainSVG").selectAll("*").remove()
     wordstream(svg, restructured, config);
+    updateTableUponSelection()
 }
 
 function panelForUpdate() {
@@ -77,7 +78,7 @@ function panelForUpdate() {
         .attr("id", "widthValue")
         .attr("type", "number")
         .attr("value", +svg.attr("width"))
-        .attr("step", "50")
+        .attr("step", "100")
         .on("change", function () {
             svg.attr("width", this.value)
             visualize()
@@ -95,7 +96,7 @@ function panelForUpdate() {
         .attr("id", "heightValue")
         .attr("type", "number")
         .attr("value", +svg.attr("height"))
-        .attr("step", "50")
+        .attr("step", "100")
         .on("change", function () {
             svg.attr("height", this.value)
             visualize()
@@ -125,6 +126,9 @@ function panelForUpdate() {
         .attr("class", "refresh-btn")
         .html("Refresh")
         .on("click", function () {
+            resetFilter();
             visualize()
         });
+
+
 }
