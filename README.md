@@ -15,3 +15,5 @@ Visualizing the evolution of topics extracted from HIDIVE Lab publication titles
 - 'Read more' when the author list becomes too long
 - Hovering upon legend text for its list of venues
 - The background in the header also resembles a stream~~
+
+[HIDIVE-WordStream.mov](media%2FHIDIVE-WordStream.mov)
