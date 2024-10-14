@@ -249,7 +249,6 @@ function hightlighText(){
         .style("background", function () {
             let item = this.innerHTML.split("<")[0].toLowerCase()
             return hexaChangeRGB(colorWord(getCategory(item)), 0.3)
-
         })
         .classed("highlight", true)
         .html(function () {

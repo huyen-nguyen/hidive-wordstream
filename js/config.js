@@ -1,22 +1,23 @@
 // HIDIVE data
+const categories = ["Cell", "Nature", "Bioinformatics",  "Visualization", "Others"]
 const taxonomy = {
     'Cell': ["Cell", "Cell Reports", "Cancer Cell", "Cell Systems", "Histochemistry and Cell Biology"],
 
-    'Visualization': ["IEEE Transactions on Visualization and Computer Graphics", "Computer Graphics Forum","2023 IEEE Visualization and Visual Analytics (VIS)", "Poster Compendium of the IEEE Conference on Information Visualization (InfoVis’ 15)", "Information Visualization", "IEEE Symposium on Biological Data Visualization 2011", "Proceedings of the IEEE Information Visualization Conference–Posters (InfoVis’ 19)", "Poster Compendium of the IEEE VIS Conference. IEEE", "2023 IEEE VIS Workshop on Visualization Education, Literacy, and Activities (EduVis)", "IEEE Computer Graphics and Applications", "EuroVis 2016 - Posters", "Proceedings of the 2023 CHI Conference on Human Factors in Computing Systems", "2019 IEEE Visualization Conference (VIS)"],
+    'Nature': ["Nature", "Nature Methods", "Nature Genetics", "Nature Communications", "Nature Medicine", "Nature Cell Biology", "Nature Biotechnology", "Nature Aging"],
 
     "Bioinformatics": ["Bioinformatics", "BMC Bioinformatics", "PLoS Computational Biology", "Biocomputing 2021", "Bioinformatics (Oxford, England)", "Journal of Biomedical Informatics", "Biocomputing 2016: Proceedings of the Pacific Symposium", ],
 
-    'Nature': ["Nature", "Nature Methods", "Nature Genetics", "Nature Communications", "Nature Medicine", "Nature Cell Biology", "Nature Biotechnology", "Nature Aging"],
+    'Visualization': ["IEEE Transactions on Visualization and Computer Graphics", "Computer Graphics Forum","2023 IEEE Visualization and Visual Analytics (VIS)", "Poster Compendium of the IEEE Conference on Information Visualization (InfoVis’ 15)", "Information Visualization", "IEEE Symposium on Biological Data Visualization 2011", "Proceedings of the IEEE Information Visualization Conference–Posters (InfoVis’ 19)", "Poster Compendium of the IEEE VIS Conference. IEEE", "2023 IEEE VIS Workshop on Visualization Education, Literacy, and Activities (EduVis)", "IEEE Computer Graphics and Applications", "EuroVis 2016 - Posters", "Proceedings of the 2023 CHI Conference on Human Factors in Computing Systems", "2019 IEEE Visualization Conference (VIS)"],
 }
 
 const taxonomy_shorten = {
     'Cell': ["Cell", "Cell Reports", "Cancer Cell", "Cell Systems", "Histochemistry and Cell Biology"],
 
-    'Visualization': ["IEEE TVCG - VIS", "CHI", "IEEE Computer Graphics and Applications", "EuroVis", "IEEE BioVis", "Computer Graphics Forum", "InfoVis", "Information Visualization" ],
+    'Nature': ["Nature", "Nature Methods", "Nature Genetics", "Nature Communications", "Nature Medicine", "Nature Cell Biology", "Nature Biotechnology", "Nature Aging"],
 
     "Bioinformatics": ["Bioinformatics", "BMC Bioinformatics", "PLoS Computational Biology", "Biocomputing", "Journal of Biomedical Informatics" ],
 
-    'Nature': ["Nature", "Nature Methods", "Nature Genetics", "Nature Communications", "Nature Medicine", "Nature Cell Biology", "Nature Biotechnology", "Nature Aging"],
+    'Visualization': ["IEEE TVCG - VIS", "CHI", "IEEE Computer Graphics and Applications", "EuroVis", "IEEE BioVis", "Computer Graphics Forum", "InfoVis", "Information Visualization" ],
 }
 
 // Misc
@@ -58,9 +59,7 @@ let filters = {
     "Others": "",
 }
 
-const categories = ["Cell", "Visualization", "Bioinformatics", "Nature", "Others"]
-
-const customcolorScheme = ['#D55E00', '#0072B2', '#E69F00', '#009E73',  '#cc438f'];
+const customcolorScheme = ['#D55E00', '#009E73', '#E69F00', '#0072B2', '#b7528a', ];
 
 function colorWord(category) {
     return customcolorScheme[categories.indexOf(category)]
