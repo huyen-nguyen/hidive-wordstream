@@ -72,7 +72,8 @@ function drawTable(dataset) {
 
     let table = tablediv
         .append('table')
-        .attr("class", "display");
+        .attr("class", "display")
+        .attr("id", "dataTable");
 
     // Initialize DataTables with the dataset and column titles
     $(table.node()).DataTable({
@@ -82,12 +83,12 @@ function drawTable(dataset) {
         "deferRender": true, // Efficient rendering for large datasets
         autoWidth: false,
         columns: [
-            { title: 'Year', width: '5%', targets: 0 },
-            { title: 'Authors', width: '30%', targets: 1 },
-            { title: 'Title', width: '25%', targets: 2, className: 'title-col' },
-            { title: 'Venue', width: '10%', targets: 3 },
-            { title: 'DOI', width: '12%', targets: 4 },
-            { title: 'URL', width: '12%', targets: 5,
+            { title: 'Year', className: 'col-year' },  // Class for 'Year' column
+            { title: 'Authors', className: 'col-authors' }, // Class for 'Authors' column
+            { title: 'Title', className: 'col-title title-col' }, // Class for 'Title' column
+            { title: 'Venue', className: 'col-venue' },  // Class for 'Venue' column
+            { title: 'DOI', className: 'col-doi' },  // Class for 'DOI' column
+            { title: 'URL', className: 'col-url',  // Clas
                 render: function(data) {
                     // Return the URL as a clickable link
                     return '<a href="' + data + '" target="_blank">' + data + '</a>';
